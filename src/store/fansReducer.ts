@@ -1,22 +1,32 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { FansType, Person } from "../types/commonTypes";
+import { defineGender } from "../utils";
 
-type fansType = {
-  male: string[];
-  female: string[];
-  others: string[];
+const initialState: FansType = {
+  favorites: {
+    male: [],
+    female: [],
+    others: []
+  }
 };
 
-const initialState: fansType = {
-  male: [],
-  female: [],
-  others: []
-};
-
-const TodosSlice = createSlice({
+const FansSlice = createSlice({
   name: "fans",
   initialState,
-  reducers: {}
+  reducers: {
+    toggleFanStatus: (state, action: PayloadAction<Person>) => {
+      const gender = defineGender(action.payload.gender);
+
+      if (state.favorites[gender].includes(action.payload.url)) {
+        state.favorites[gender] = state.favorites[gender].filter(
+          (item) => item !== action.payload.url
+        );
+      } else {
+        state.favorites[gender].push(action.payload.url);
+      }
+    }
+  }
 });
 
-// export const { } = TodosSlice.actions;
-export default TodosSlice.reducer;
+export const { toggleFanStatus } = FansSlice.actions;
+export default FansSlice.reducer;
