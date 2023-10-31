@@ -12,15 +12,18 @@ type DetailsScreenProps = {
   navigation: NativeStackScreenProps<StackParamList, "Details">;
 };
 
-const PersonDetailsScreen: React.FC<DetailsScreenProps> = ({
-  route,
-  navigation,
-}) => {
+const PersonDetailsScreen: React.FC<DetailsScreenProps> = ({ route }) => {
   const { personUrl } = route.params;
   const { peopleResponse } = useAppSelector((state) => state.peopleReducer);
   let person: Person | undefined;
+
   if (peopleResponse) {
-    person = peopleResponse.results.find((person) => (person.url = personUrl));
+    person = peopleResponse.results.find((person) => person.url === personUrl);
+  }
+
+  function formatString(inputString: string): string {
+    const stringWithSpaces = inputString.replace(/_/g, " ");
+    return stringWithSpaces[0].toUpperCase() + stringWithSpaces.slice(1);
   }
 
   return (
@@ -34,8 +37,10 @@ const PersonDetailsScreen: React.FC<DetailsScreenProps> = ({
 
           {Object.entries(person).map(([key, value], index) => (
             <DataTable.Row key={index}>
-              <DataTable.Cell>{key}</DataTable.Cell>
-              <DataTable.Cell>{value}</DataTable.Cell>
+              <DataTable.Cell>{formatString(key)}</DataTable.Cell>
+              <DataTable.Cell>
+                <Text>{value}</Text>
+              </DataTable.Cell>
             </DataTable.Row>
           ))}
         </DataTable>

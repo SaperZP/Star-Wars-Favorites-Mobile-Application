@@ -2,42 +2,47 @@ import { StyleSheet } from "react-native";
 
 export const homeScreenStyles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   wrapper: {
     flex: 1,
     padding: 10,
-    gap: 20,
+    gap: 20
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "center"
   },
   header_button: {
-    borderRadius: 5,
+    borderRadius: 5
   },
   fans: {
     flexDirection: "row",
-    gap: 20,
+    gap: 20
   },
   fans_card: {
     flex: 1,
     padding: 10,
     borderRadius: 5,
-    alignItems: "center",
+    alignItems: "center"
   },
   fans_cardText: {
-    textTransform: "capitalize",
+    textTransform: "capitalize"
+  }
+});
+
+export const PeopleTableStyles = StyleSheet.create({
+  dataTable: {
+    flex: 1
   },
-  dataTable_wrapper: {},
   dataTable_header: {
     alignItems: "center",
-    gap: 5,
+    gap: 5
   },
   dataTableSellSize: {
     justifyContent: "center",
     width: 100,
-    marginLeft: 20,
-  },
+    marginLeft: 20
+  }
 });
