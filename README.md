@@ -21,6 +21,9 @@ https://swapi.dev/
 Reference:
 https://sw-app-gilt.vercel.app/
 
+[Screenshot 2023-10-31 at 16 04 55](https://github.com/SaperZP/incode_tt/assets/26072694/0d394856-74ba-494f-8327-1de31ea26815)
+[Screenshot 2023-10-31 at 16 04 50](https://github.com/SaperZP/incode_tt/assets/26072694/c69011ec-0fb4-43c0-953d-4f13f1f5927c)
+
 # Getting Started
 
 > **Note**: Make sure you have completed
@@ -62,6 +65,8 @@ yarn android
 # using npm
 npm run ios
 
-# OR using Yarn
-yarn ios
+# OR using Yarn!
+
+yarn ios!
+
 ```
