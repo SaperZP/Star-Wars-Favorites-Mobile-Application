@@ -1,6 +1,7 @@
 import { PeopleResponseType } from "../types/commonTypes";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getAdditionalData, getPeople } from "../api/api";
+import dummy from "../api/dummy.json";
 
 type peopleFetchType = {
   loading: boolean;
@@ -9,7 +10,7 @@ type peopleFetchType = {
 
 const initialState: peopleFetchType = {
   loading: false,
-  peopleResponse: null
+  peopleResponse: null,
 };
 
 const peopleSlice = createSlice({
@@ -25,15 +26,19 @@ const peopleSlice = createSlice({
       state.peopleResponse = action.payload;
       state.loading = false;
     });
-  }
+
+    builder.addCase(getPeopleFromServer.rejected, (state, action) => {
+      state.loading = false;
+    });
+  },
 });
 
 export const getPeopleFromServer = createAsyncThunk(
   "people/fetch",
   (input: { searchString?: string; page?: number }) =>
     getPeople(input.searchString, input.page).then((res) =>
-      getAdditionalData(res)
-    )
+      getAdditionalData(res),
+    ),
 );
 
 export default peopleSlice.reducer;

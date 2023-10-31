@@ -5,7 +5,7 @@ import React from "react";
 
 export type StackParamList = {
   Home: undefined;
-  Details: { itemId: number; otherParam: string };
+  Details: { personUrl: string };
 };
 
 export const Stack = createNativeStackNavigator<StackParamList>();
@@ -13,7 +13,11 @@ export const Stack = createNativeStackNavigator<StackParamList>();
 const RootRouter = () => {
   return (
     <Stack.Navigator initialRouteName="Home">
-      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="Home"
+        component={HomeScreen}
+      />
       <Stack.Screen name="Details" component={PersonDetailsScreen} />
     </Stack.Navigator>
   );

@@ -6,8 +6,8 @@ const initialState: FansType = {
   favorites: {
     male: [],
     female: [],
-    others: []
-  }
+    others: [],
+  },
 };
 
 const FansSlice = createSlice({
@@ -19,14 +19,17 @@ const FansSlice = createSlice({
 
       if (state.favorites[gender].includes(action.payload.url)) {
         state.favorites[gender] = state.favorites[gender].filter(
-          (item) => item !== action.payload.url
+          (item) => item !== action.payload.url,
         );
       } else {
         state.favorites[gender].push(action.payload.url);
       }
-    }
-  }
+    },
+    resetState: (state) => {
+      state.favorites = initialState.favorites;
+    },
+  },
 });
 
-export const { toggleFanStatus } = FansSlice.actions;
+export const { toggleFanStatus, resetState } = FansSlice.actions;
 export default FansSlice.reducer;

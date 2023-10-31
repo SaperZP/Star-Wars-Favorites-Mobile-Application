@@ -5,20 +5,20 @@ import { setupCache } from "axios-cache-adapter";
 const BASE_URL = "https://swapi.dev/api/people/";
 
 const cache = setupCache({
-  maxAge: 15 * 60 * 1000 // Cache responses for 15 minutes
+  maxAge: 15 * 60 * 1000, // Cache responses for 15 minutes
 });
 
 const api = axios.create({
-  adapter: cache.adapter
+  adapter: cache.adapter,
 });
 
 export async function getPeople(
   search = "",
-  page = 1
+  page = 1,
 ): Promise<PeopleResponseType> {
   try {
     const response = await api.get(BASE_URL, {
-      params: { search, page }
+      params: { search, page },
     });
 
     return response.data;
@@ -33,6 +33,13 @@ export async function getAdditionalData(data: PeopleResponseType) {
   const results = data.results;
   const fetchPromises = [];
 
+  const handleError = (error: any, errorMessage: any) => {
+    // eslint-disable-next-line no-console
+    console.log(errorMessage);
+    // eslint-disable-next-line no-console
+    console.error(error);
+  };
+
   for (const person of results) {
     const homeworldPromise = api.get(person.homeworld);
     const speciesPromise =
@@ -40,31 +47,25 @@ export async function getAdditionalData(data: PeopleResponseType) {
         ? api.get(person.species[0])
         : Promise.resolve({ data: { name: "unknown" }, status: 200 });
 
-    fetchPromises.push(
-      Promise.all([homeworldPromise, speciesPromise])
-        .then(([homeworldResponse, speciesResponse]) => {
-          if (homeworldResponse.status === 200) {
-            person.homeworld = homeworldResponse.data.name;
-          } else {
-            person.homeworld = "cannot get data";
-            // eslint-disable-next-line no-console
-            console.error(homeworldResponse);
-          }
+    homeworldPromise
+      .then((homeworldResponse) => {
+        person.homeworld = homeworldResponse.data.name;
+      })
+      .catch((error) => {
+        handleError(error, "Unhandled error in homeworldPromise");
+      });
 
-          if (speciesResponse.status === 200) {
-            person.species = speciesResponse.data.name;
-          } else {
-            person.species = "cannot get data";
-            // eslint-disable-next-line no-console
-            console.error(speciesResponse);
-          }
-        })
-        .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error(error);
-        })
-    );
+    speciesPromise
+      .then((speciesResponse) => {
+        person.species = speciesResponse.data.name;
+      })
+      .catch((error) => {
+        handleError(error, "Unhandled error in speciesPromise");
+      });
+
+    fetchPromises.push(Promise.all([homeworldPromise, speciesPromise]));
   }
+
   await Promise.all(fetchPromises);
 
   return data;

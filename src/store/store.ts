@@ -1,5 +1,7 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import fansReducer from "./fansReducer";
+import peopleReducer from "./peopleReducer";
+import themeReducer from "./themeReducer";
 import {
   persistStore,
   persistReducer,
@@ -8,18 +10,21 @@ import {
   PAUSE,
   PERSIST,
   PURGE,
-  REGISTER
+  REGISTER,
 } from "redux-persist";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import peopleReducer from "./peopleReducer";
 
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
-  blacklist: ["peopleReducer"]
+  blacklist: ["peopleReducer"],
 };
 
-const rootReducer = combineReducers({ fansReducer, peopleReducer });
+const rootReducer = combineReducers({
+  fansReducer,
+  peopleReducer,
+  themeReducer,
+});
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -28,9 +33,9 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
-      }
-    })
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
 
 export const persistor = persistStore(store);

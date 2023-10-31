@@ -1,83 +1,215 @@
-import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import React, { useEffect, useMemo, useState } from "react";
+import { FlatList, SafeAreaView, ScrollView, View } from "react-native";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { StackParamList } from "../../navigation/Navigation";
-import { DataTable, Icon } from "react-native-paper";
-import { toggleFanStatus } from "../../store/fansReducer";
+import {
+  DataTable,
+  Icon,
+  Text,
+  Button,
+  Surface,
+  TextInput,
+  useTheme,
+} from "react-native-paper";
+import { resetState, toggleFanStatus } from "../../store/fansReducer";
 import { defineGender } from "../../utils";
 import { getPeopleFromServer } from "../../store/peopleReducer";
 import Loader from "../../components/loader";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { homeScreenStyles } from "./styles";
+import { useDebounce } from "use-debounce";
 
-type HomeScreenProps = {
-  navigation: NativeStackScreenProps<StackParamList, "Home">;
-};
-
-const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+const HomeScreen: React.FC = () => {
+  const navigation = useNavigation<NavigationProp<StackParamList>>();
   const dispatch = useAppDispatch();
+  const theme = useTheme();
+
   const { peopleResponse, loading } = useAppSelector(
-    (state) => state.peopleReducer
+    (state) => state.peopleReducer,
   );
   const { favorites } = useAppSelector((state) => state.fansReducer);
 
   const [searchString, setSearchString] = useState("");
   const [page, setPage] = useState(0);
+  const [sortOrder, setSortOrder] = useState<"ascending" | "descending">(
+    "ascending",
+  );
 
+  const sortedPeopleByName = useMemo(() => {
+    if (!peopleResponse?.results) {
+      return [];
+    }
+
+    const sorted = [...peopleResponse.results].sort(
+      (firstPerson, secondPerson) =>
+        firstPerson.name.localeCompare(secondPerson.name),
+    );
+
+    return sortOrder === "ascending" ? sorted : sorted.reverse();
+  }, [peopleResponse, sortOrder]);
+  const [debouncedSearch] = useDebounce(searchString, 1000);
   const from = page * 10;
   const to = Math.min(
     (page + 1) * 10,
-    peopleResponse ? peopleResponse.count : 0
+    peopleResponse ? peopleResponse.count : 0,
   );
 
   useEffect(() => {
-    dispatch(getPeopleFromServer({ searchString, page: page + 1 }));
-  }, [searchString, page]);
+    dispatch(
+      getPeopleFromServer({ searchString: debouncedSearch, page: page + 1 }),
+    );
+  }, [debouncedSearch, page]);
 
   return (
-    <View style={styles.container}>
-      {!peopleResponse ? (
-        <Loader loading={loading} />
-      ) : (
-        <ScrollView horizontal>
-          <Loader loading={loading} />
-          <DataTable>
-            <DataTable.Header>
-              <DataTable.Title>
-                <Icon size={20} source={"heart"} />
-              </DataTable.Title>
-              <DataTable.Title>Name</DataTable.Title>
-              <DataTable.Title>Birth Year</DataTable.Title>
-              <DataTable.Title>Gender</DataTable.Title>
-              <DataTable.Title>Home World</DataTable.Title>
-              <DataTable.Title>Species</DataTable.Title>
-            </DataTable.Header>
+    <SafeAreaView style={homeScreenStyles.container}>
+      {peopleResponse && !loading ? (
+        <View style={homeScreenStyles.wrapper}>
+          <View style={homeScreenStyles.header}>
+            <Text variant={"displayMedium"}>Fans</Text>
 
-            {peopleResponse.results.map((person) => (
-              <DataTable.Row
-                // onPress={() => console.log(person.url)}
-                key={person.url}
+            <Button
+              onPress={() => dispatch(resetState())}
+              style={[
+                homeScreenStyles.header_button,
+                { borderColor: theme.colors.error },
+              ]}
+              labelStyle={{ textTransform: "uppercase" }}
+              textColor={theme.colors.error}
+              mode={"outlined"}
+            >
+              Clear Fans
+            </Button>
+          </View>
+
+          <View style={homeScreenStyles.fans}>
+            {Object.entries(favorites).map((category) => (
+              <Surface
+                key={category[0]}
+                style={homeScreenStyles.fans_card}
+                elevation={1}
               >
-                <DataTable.Cell
-                  onPress={() => dispatch(toggleFanStatus(person))}
+                <Text
+                  style={homeScreenStyles.fans_cardText}
+                  variant={"headlineMedium"}
                 >
-                  <Icon
-                    size={20}
-                    source={
-                      favorites[defineGender(person.gender)].includes(
-                        person.url
-                      )
-                        ? "heart"
-                        : "heart-outline"
-                    }
-                  />
-                </DataTable.Cell>
-                <DataTable.Cell>{person.name}</DataTable.Cell>
-                <DataTable.Cell>{person.birth_year}</DataTable.Cell>
-                <DataTable.Cell>{person.gender}</DataTable.Cell>
-                <DataTable.Cell>{person.homeworld}</DataTable.Cell>
-                <DataTable.Cell>{person.species}</DataTable.Cell>
-              </DataTable.Row>
+                  {category[1].length}
+                </Text>
+
+                <Text
+                  style={homeScreenStyles.fans_cardText}
+                  variant={"bodySmall"}
+                >
+                  {category[0] !== "others"
+                    ? `${category[0]} fans`
+                    : `${category[0]}`}
+                </Text>
+              </Surface>
             ))}
+          </View>
+
+          <TextInput
+            value={searchString}
+            onChangeText={(input) => setSearchString(input)}
+            activeUnderlineColor={theme.colors.background}
+            underlineColor={theme.colors.background}
+            style={[{ backgroundColor: theme.colors.background }]}
+            label={"Search"}
+            left={<TextInput.Icon icon={"magnify"} />}
+          />
+
+          <DataTable style={{ flex: 1 }}>
+            <ScrollView horizontal>
+              <FlatList
+                ListHeaderComponent={
+                  <DataTable.Header
+                    style={[
+                      homeScreenStyles.dataTable_header,
+                      { backgroundColor: theme.colors.background },
+                    ]}
+                  >
+                    <DataTable.Title>
+                      <Icon size={20} source={"heart"} />
+                    </DataTable.Title>
+                    <DataTable.Title
+                      sortDirection={sortOrder}
+                      onPress={() =>
+                        setSortOrder((order) =>
+                          order === "ascending" ? "descending" : "ascending",
+                        )
+                      }
+                      style={homeScreenStyles.dataTableSellSize}
+                    >
+                      Name
+                    </DataTable.Title>
+                    <DataTable.Title style={homeScreenStyles.dataTableSellSize}>
+                      Birth Year
+                    </DataTable.Title>
+                    <DataTable.Title style={homeScreenStyles.dataTableSellSize}>
+                      Gender
+                    </DataTable.Title>
+                    <DataTable.Title style={homeScreenStyles.dataTableSellSize}>
+                      Home World
+                    </DataTable.Title>
+                    <DataTable.Title style={homeScreenStyles.dataTableSellSize}>
+                      Species
+                    </DataTable.Title>
+                  </DataTable.Header>
+                }
+                stickyHeaderIndices={[0]}
+                data={sortedPeopleByName}
+                keyExtractor={(item) => item.url}
+                renderItem={({ item }) => {
+                  const inFavorites = favorites[
+                    defineGender(item.gender)
+                  ].includes(item.url);
+
+                  const navigationHandler = () => {
+                    navigation.navigate("Details", { personUrl: item.url });
+                  };
+
+                  const fanStatusHandler = () => {
+                    dispatch(toggleFanStatus(item));
+                  };
+
+                  return (
+                    <DataTable.Row onPress={navigationHandler}>
+                      <DataTable.Cell onPress={fanStatusHandler}>
+                        <Icon
+                          color={theme.colors.error}
+                          size={20}
+                          source={inFavorites ? "heart" : "heart-outline"}
+                        />
+                      </DataTable.Cell>
+                      <DataTable.Cell
+                        style={homeScreenStyles.dataTableSellSize}
+                      >
+                        {item.name}
+                      </DataTable.Cell>
+                      <DataTable.Cell
+                        style={homeScreenStyles.dataTableSellSize}
+                      >
+                        {item.birth_year}
+                      </DataTable.Cell>
+                      <DataTable.Cell
+                        style={homeScreenStyles.dataTableSellSize}
+                      >
+                        {item.gender}
+                      </DataTable.Cell>
+                      <DataTable.Cell
+                        style={homeScreenStyles.dataTableSellSize}
+                      >
+                        {item.homeworld}
+                      </DataTable.Cell>
+                      <DataTable.Cell
+                        style={homeScreenStyles.dataTableSellSize}
+                      >
+                        {item.species}
+                      </DataTable.Cell>
+                    </DataTable.Row>
+                  );
+                }}
+              />
+            </ScrollView>
 
             <DataTable.Pagination
               page={page}
@@ -86,16 +218,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               label={`${from + 1}-${to} of ${peopleResponse.count}`}
             />
           </DataTable>
-        </ScrollView>
+        </View>
+      ) : (
+        <Loader loading={loading} />
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 
 export default HomeScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    height: "100%"
-  }
-});

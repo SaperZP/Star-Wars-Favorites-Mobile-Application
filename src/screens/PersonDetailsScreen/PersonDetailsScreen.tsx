@@ -1,24 +1,50 @@
 import React from "react";
-import { Text, View } from "react-native";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { ScrollView, Text, View } from "react-native";
 import { RouteProp } from "@react-navigation/native";
 import { StackParamList } from "../../navigation/Navigation";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useAppSelector } from "../../store/hooks";
+import { DataTable } from "react-native-paper";
+import { Person } from "../../types/commonTypes";
 
 type DetailsScreenProps = {
   route: RouteProp<StackParamList, "Details">;
-  navigation: StackNavigationProp<StackParamList, "Details">;
+  navigation: NativeStackScreenProps<StackParamList, "Details">;
 };
 
 const PersonDetailsScreen: React.FC<DetailsScreenProps> = ({
   route,
-  navigation
+  navigation,
 }) => {
-  const { itemId } = route.params;
+  const { personUrl } = route.params;
+  const { peopleResponse } = useAppSelector((state) => state.peopleReducer);
+  let person: Person | undefined;
+  if (peopleResponse) {
+    person = peopleResponse.results.find((person) => (person.url = personUrl));
+  }
 
   return (
-    <View>
-      <Text>Details</Text>
-    </View>
+    <ScrollView>
+      {person ? (
+        <DataTable>
+          <DataTable.Header>
+            <DataTable.Title>Characteristic</DataTable.Title>
+            <DataTable.Title>Value</DataTable.Title>
+          </DataTable.Header>
+
+          {Object.entries(person).map(([key, value], index) => (
+            <DataTable.Row key={index}>
+              <DataTable.Cell>{key}</DataTable.Cell>
+              <DataTable.Cell>{value}</DataTable.Cell>
+            </DataTable.Row>
+          ))}
+        </DataTable>
+      ) : (
+        <View>
+          <Text>Person not found</Text>
+        </View>
+      )}
+    </ScrollView>
   );
 };
 
