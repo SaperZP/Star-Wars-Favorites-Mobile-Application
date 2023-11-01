@@ -14,3 +14,8 @@ export const defineGender = (gender: string) => {
 
   return result;
 };
+
+export function isValidUrl(url: string): boolean {
+  const urlPattern = /^https:\/\/[^\s/$.?#].[^\s]*$/i;
+  return urlPattern.test(url);
+}
