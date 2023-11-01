@@ -31,7 +31,7 @@ const PeopleTable: React.FC<PeopleTableProps> = ({
   );
   const sortedPeopleByName = useMemo(() => {
     if (!peopleResponse?.results) {
-      return [];
+      return null;
     }
 
     const sorted = [...peopleResponse.results].sort(
