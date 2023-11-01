@@ -2,6 +2,11 @@ Star Wars Favorites Mobile Application
 
 Stack: ReactNative, Redux-toolkit, Redux-persist, Axios,React Native Paper, React Navigation
 
+[Iphone 15pro ios17.0](https://github.com/SaperZP/incode_tt/assets/26072694/0d394856-74ba-494f-8327-1de31ea26815)
+
+[Pixel 4 API30 Android 11.0](https://github.com/SaperZP/incode_tt/assets/26072694/c69011ec-0fb4-43c0-953d-4f13f1f5927c)
+
+
 Task:
 Implement the mobile application based on React Native Init/CLI (not Expo) for iOS & Android platforms that gives the
 ability to indicate the total amount of male/female/other favourite characters across the Star Wars Universe.
@@ -62,6 +67,8 @@ yarn android
 # using npm
 npm run ios
 
-# OR using Yarn
-yarn ios
+# OR using Yarn!
+
+yarn ios!
+
 ```
