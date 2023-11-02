@@ -8,6 +8,7 @@ import { PeopleResponseType } from "../../../types/commonTypes";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { StackParamList } from "../../../navigation/Navigation";
 import { useAppDispatch } from "../../../store/hooks";
+import { useCustomDimentions } from "../../../hooks/useCustomDimentions";
 
 type PeopleTableProps = {
   peopleResponse: PeopleResponseType;
@@ -25,6 +26,7 @@ const PeopleTable: React.FC<PeopleTableProps> = ({
   const theme = useTheme();
   const navigation = useNavigation<NavigationProp<StackParamList>>();
   const dispatch = useAppDispatch();
+  const { orientation } = useCustomDimentions();
 
   const [sortOrder, setSortOrder] = useState<"ascending" | "descending">(
     "ascending"
@@ -49,6 +51,7 @@ const PeopleTable: React.FC<PeopleTableProps> = ({
     <DataTable style={styles.dataTable}>
       <ScrollView horizontal>
         <FlatList
+          scrollEnabled={orientation === "PORTRAIT"}
           stickyHeaderIndices={[0]}
           data={sortedPeopleByName}
           keyExtractor={(item) => item.url}

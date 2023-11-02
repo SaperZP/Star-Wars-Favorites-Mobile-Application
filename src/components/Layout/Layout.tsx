@@ -1,12 +1,16 @@
 import React, { JSX } from "react";
 import { SafeAreaView, ScrollView } from "react-native";
+import { useCustomDimentions } from "../../hooks/useCustomDimentions";
 
-const Layout: React.FC<{ children: JSX.Element; orientation: string }> = ({
-  orientation,
-  children
-}) => {
+type OrientationType = {
+  children: JSX.Element;
+};
+
+const Layout: React.FC<OrientationType> = ({ children }) => {
+  const { orientation } = useCustomDimentions();
+
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
       {orientation === "LANDSCAPE" ? (
         <ScrollView>{children}</ScrollView>
       ) : (

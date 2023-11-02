@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, View } from "react-native";
+import { View } from "react-native";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { Text, Button, Surface, TextInput, useTheme } from "react-native-paper";
 import { resetState } from "../../store/fansReducer";
@@ -9,6 +9,7 @@ import { homeScreenStyles as styles } from "./styles";
 import { useDebounce } from "use-debounce";
 import ErrorMessage from "../../components/ErrorMessage";
 import PeopleTable from "./components/PeopleTable";
+import Layout from "../../components/Layout";
 
 const HomeScreen: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -30,7 +31,7 @@ const HomeScreen: React.FC = () => {
   }, [debouncedSearch, page]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <Layout>
       {peopleResponse && !loading ? (
         <View style={styles.wrapper}>
           <View style={styles.header}>
@@ -101,7 +102,7 @@ const HomeScreen: React.FC = () => {
           )}
         </>
       )}
-    </SafeAreaView>
+    </Layout>
   );
 };
 
