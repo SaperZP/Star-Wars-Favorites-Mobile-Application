@@ -46,7 +46,6 @@ const PeopleTable: React.FC<PeopleTableProps> = ({
 
   const from = page * 10;
   const to = Math.min((page + 1) * 10, peopleResponse.count);
-
   return (
     <DataTable style={styles.dataTable}>
       <ScrollView horizontal>

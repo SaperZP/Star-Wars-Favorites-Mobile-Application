@@ -15,7 +15,6 @@ export async function getPeople(
     const response = await api.get(BASE_URL, {
       params: { search, page }
     });
-
     return response.data;
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -27,13 +26,6 @@ export async function getPeople(
 export async function getAdditionalData(data: PeopleResponseType) {
   const results = data.results;
   const fetchPromises = [];
-
-  const handleError = (error: any, errorMessage: any) => {
-    // eslint-disable-next-line no-console
-    console.log(errorMessage);
-    // eslint-disable-next-line no-console
-    console.error(error);
-  };
 
   for (const person of results) {
     let homeworldPromise;
@@ -47,22 +39,24 @@ export async function getAdditionalData(data: PeopleResponseType) {
           person.homeworld = homeworldResponse.data.name;
         })
         .catch((error) => {
-          handleError(error, "Unhandled error in homeworldPromise");
+          // eslint-disable-next-line no-console
+          console.error(error, "homeworldPromise");
         });
     }
 
-    if (typeof person.species === "string" && isValidUrl(person.species)) {
+    if (Array.isArray(person.species)) {
       speciesPromise =
         person.species.length > 0
-          ? api.get(person.species[0])
-          : Promise.resolve({ data: { name: "unknown" }, status: 200 });
+          ? Promise.all(person.species.map((specie) => api.get(specie)))
+          : Promise.resolve([{ data: { name: "unknown" }, status: 200 }]);
 
       speciesPromise
         .then((speciesResponse) => {
-          person.species = speciesResponse.data.name;
+          person.species = speciesResponse.map((i) => i.data.name).join(", ");
         })
         .catch((error) => {
-          handleError(error, "Unhandled error in speciesPromise");
+          // eslint-disable-next-line no-console
+          console.error(error, "speciesPromise");
         });
     }
 
