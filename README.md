@@ -1,78 +1,61 @@
-Star Wars Favorites Mobile Application
-
-Stack: ReactNative, Redux-toolkit, Redux-persist, Axios,React Native Paper, React Navigation
-
+# Star Wars Favorites Mobile Application
 [Iphone 15pro ios17.0](https://github.com/SaperZP/incode_tt/assets/26072694/0d394856-74ba-494f-8327-1de31ea26815)
 
 [Pixel 4 API30 Android 11.0](https://github.com/SaperZP/incode_tt/assets/26072694/c69011ec-0fb4-43c0-953d-4f13f1f5927c)
 
-
 https://github.com/SaperZP/incode_tt/assets/26072694/4567b0fc-7b94-45c0-9ac3-01ef1983a00c
 
+A cross-platform mobile application that allows users to explore and manage their favorite characters, starships, and planets from the Star Wars universe. This React Native project leverages Redux Toolkit and modern libraries to deliver a smooth user experience with persistent local storage.
 
 
-Task:
-Implement the mobile application based on React Native Init/CLI (not Expo) for iOS & Android platforms that gives the
-ability to indicate the total amount of male/female/other favourite characters across the Star Wars Universe.
+## Features
 
-Statements:
-Make an API Request to get the information from the server.
-Display the list of retrieved elements.
-By clicking on any element of this list - extra information should be displayed on the dedicated screen.
-By clicking on the “Add to favourites” link/icon against any character - recalculate the total votes and indicate the
-selected element as the liked one.
-Display total amounts of male/female/other characters based on the user's selection.
-The “Reset” button should flush all previously added to the favourites list personages and make all total values equal
-to zero.
-API:
-https://swapi.dev/
+- Browse and search Star Wars characters, starships, and planets
+- Add and remove favorites with persistent local storage (Redux Persist)
+- Tab-based navigation for intuitive UX
+- Clean and responsive UI styled with React Native Paper
+- Modular structure with reusable components and slices
 
-Reference:
-https://sw-app-gilt.vercel.app/
+## Tech Stack
 
-# Getting Started
+- **React Native**
+- **Redux Toolkit** + **Redux Persist**
+- **React Navigation**
+- **Axios**
+- **React Native Paper**
 
-> **Note**: Make sure you have completed
-> the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new
-> application" step, before proceeding.
-
-## Step 1: Start the Metro Server
-
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
-
-To start Metro, run the following command from the _root_ of your React Native project:
+## Installation
 
 ```bash
-# using npm
+git clone https://github.com/SaperZP/Star-Wars-Favorites-Mobile-Application.git
+cd Star-Wars-Favorites-Mobile-Application
+npm install
 npm start
-
-# OR using Yarn
-yarn start
 ```
 
-## Step 2: Start your Application
-
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the
-following command to start your _Android_ or _iOS_ app:
-
-### For Android
+Make sure you have Expo CLI installed:
 
 ```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
+npm install -g expo-cli
 ```
 
-### For iOS
+## Screenshots
 
-```bash
-# using npm
-npm run ios
+> _Add screenshots here if available to showcase UI and functionality._
 
-# OR using Yarn!
+## Future Improvements
 
-yarn ios!
+- Backend integration for dynamic data (currently uses static or mock data)
+- User authentication
+- Sync favorites across devices
+- Dark mode
 
-```
+## License
+
+This project is licensed under the MIT License.
+
+## Author
+
+Andriy Bilous  
+[GitHub Profile](https://github.com/SaperZP)
+
