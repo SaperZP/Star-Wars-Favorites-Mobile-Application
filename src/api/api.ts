@@ -3,19 +3,24 @@ import { PeopleResponseType } from "../types/commonTypes";
 import { setupCache } from "axios-cache-interceptor";
 import { isValidUrl } from "../utils";
 
-const BASE_URL = "https://swapi.dev/api/people/";
+const BASE_URL = "https://www.swapi.tech/api/people/";
 
 const api = setupCache(axios);
 
 export async function getPeople(
-  search = "",
+  name = "",
   page = 1
 ): Promise<PeopleResponseType> {
   try {
     const response = await api.get(BASE_URL, {
-      params: { search, page }
+      params: { page, limit: 10, name, expanded: true }
     });
-    return response.data;
+
+    if (response.data.results) {
+      return response.data;
+    } else {
+      return { ...response.data, results: response.data.result };
+    }
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error("An error occurred while fetching data:", error);
@@ -31,12 +36,13 @@ export async function getAdditionalData(data: PeopleResponseType) {
     let homeworldPromise;
     let speciesPromise;
 
-    if (isValidUrl(person.homeworld)) {
-      homeworldPromise = api.get(person.homeworld);
+    if (isValidUrl(person.properties.homeworld)) {
+      homeworldPromise = api.get(person.properties.homeworld);
 
       homeworldPromise
         .then((homeworldResponse) => {
-          person.homeworld = homeworldResponse.data.name;
+          person.properties.homeworld =
+            homeworldResponse.data.result.properties.name;
         })
         .catch((error) => {
           // eslint-disable-next-line no-console
@@ -44,15 +50,19 @@ export async function getAdditionalData(data: PeopleResponseType) {
         });
     }
 
-    if (Array.isArray(person.species)) {
+    if (Array.isArray(person.properties.species)) {
       speciesPromise =
-        person.species.length > 0
-          ? Promise.all(person.species.map((specie) => api.get(specie)))
+        person.properties.species.length > 0
+          ? Promise.all(
+            person.properties.species.map((specie: string) => api.get(specie))
+          )
           : Promise.resolve([{ data: { name: "unknown" }, status: 200 }]);
 
       speciesPromise
         .then((speciesResponse) => {
-          person.species = speciesResponse.map((i) => i.data.name).join(", ");
+          person.properties.species = speciesResponse
+            .map((i) => i.data.name)
+            .join(", ");
         })
         .catch((error) => {
           // eslint-disable-next-line no-console

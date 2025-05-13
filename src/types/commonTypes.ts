@@ -1,7 +1,6 @@
 export interface Person {
   birth_year: string;
   eye_color: string;
-  films: string[];
   gender: string;
   hair_color: string;
   height: string;
@@ -9,19 +8,22 @@ export interface Person {
   mass: string;
   name: string;
   skin_color: string;
-  created: string;
-  edited: string;
-  species: string[] | string;
-  starships: string[];
   url: string;
-  vehicles: string[];
+  species: string;
+}
+
+export interface PersonResult {
+  properties: Person;
+  _id: string;
 }
 
 export type PeopleResponseType = {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: Person[];
+  message: string;
+  total_records?: number;
+  total_pages?: number;
+  previous?: string | null;
+  next?: string | null;
+  results: PersonResult[];
 };
 
 export type FansType = {

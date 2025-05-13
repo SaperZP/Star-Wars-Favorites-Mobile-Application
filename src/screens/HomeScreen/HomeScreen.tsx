@@ -26,7 +26,7 @@ const HomeScreen: React.FC = () => {
 
   useEffect(() => {
     dispatch(
-      getPeopleFromServer({ searchString: debouncedSearch, page: page + 1 })
+      getPeopleFromServer({ page: page + 1, searchString: debouncedSearch })
     );
   }, [debouncedSearch, page]);
 

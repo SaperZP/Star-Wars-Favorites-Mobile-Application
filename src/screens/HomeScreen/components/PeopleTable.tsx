@@ -38,14 +38,17 @@ const PeopleTable: React.FC<PeopleTableProps> = ({
 
     const sorted = [...peopleResponse.results].sort(
       (firstPerson, secondPerson) =>
-        firstPerson.name.localeCompare(secondPerson.name)
+        firstPerson.properties.name.localeCompare(secondPerson.properties.name)
     );
 
     return sortOrder === "ascending" ? sorted : sorted.reverse();
   }, [peopleResponse, sortOrder]);
 
   const from = page * 10;
-  const to = Math.min((page + 1) * 10, peopleResponse.count);
+  const total_records = peopleResponse.total_records
+    ? peopleResponse.total_records
+    : peopleResponse.results.length;
+  const to = Math.min((page + 1) * 10, total_records);
   return (
     <DataTable style={styles.dataTable}>
       <ScrollView horizontal>
@@ -53,7 +56,7 @@ const PeopleTable: React.FC<PeopleTableProps> = ({
           scrollEnabled={orientation === "PORTRAIT"}
           stickyHeaderIndices={[0]}
           data={sortedPeopleByName}
-          keyExtractor={(item) => item.url}
+          keyExtractor={(item) => item._id}
           ListHeaderComponent={
             <DataTable.Header
               style={[
@@ -90,16 +93,18 @@ const PeopleTable: React.FC<PeopleTableProps> = ({
             </DataTable.Header>
           }
           renderItem={({ item }) => {
-            const inFavorites = favorites[defineGender(item.gender)].includes(
-              item.url
-            );
+            const inFavorites = favorites[
+              defineGender(item.properties.gender)
+            ].includes(item.properties.url);
 
             const navigationHandler = () => {
-              navigation.navigate("Details", { personUrl: item.url });
+              navigation.navigate("Details", {
+                personUrl: item.properties.url
+              });
             };
 
             const fanStatusHandler = () => {
-              dispatch(toggleFanStatus(item));
+              dispatch(toggleFanStatus(item.properties));
             };
 
             return (
@@ -112,19 +117,21 @@ const PeopleTable: React.FC<PeopleTableProps> = ({
                   />
                 </DataTable.Cell>
                 <DataTable.Cell style={styles.dataTableSellSize}>
-                  <Text style={{ textAlign: "center" }}>{item.name}</Text>
+                  <Text style={{ textAlign: "center" }}>
+                    {item.properties.name}
+                  </Text>
                 </DataTable.Cell>
                 <DataTable.Cell style={styles.dataTableSellSize}>
-                  {item.birth_year}
+                  {item.properties.birth_year}
                 </DataTable.Cell>
                 <DataTable.Cell style={styles.dataTableSellSize}>
-                  {item.gender}
+                  {item.properties.gender}
                 </DataTable.Cell>
                 <DataTable.Cell style={styles.dataTableSellSize}>
-                  {item.homeworld}
+                  {item.properties.homeworld}
                 </DataTable.Cell>
                 <DataTable.Cell style={styles.dataTableSellSize}>
-                  {item.species}
+                  {item.properties.species}
                 </DataTable.Cell>
               </DataTable.Row>
             );
@@ -134,9 +141,9 @@ const PeopleTable: React.FC<PeopleTableProps> = ({
 
       <DataTable.Pagination
         page={page}
-        numberOfPages={Math.ceil(peopleResponse.count / 10)}
+        numberOfPages={Math.ceil(total_records / 10)}
         onPageChange={(page) => onChangePage(page)}
-        label={`${from + 1}-${to} of ${peopleResponse.count}`}
+        label={`${from + 1}-${to} of ${total_records}`}
       />
     </DataTable>
   );

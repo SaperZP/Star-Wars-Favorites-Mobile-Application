@@ -19,7 +19,9 @@ const PersonDetailsScreen: React.FC<DetailsScreenProps> = ({ route }) => {
   let person: Person | undefined;
 
   if (peopleResponse) {
-    person = peopleResponse.results.find((person) => person.url === personUrl);
+    person = peopleResponse.results.find(
+      (person) => person.properties.url === personUrl
+    )?.properties;
   }
 
   const formatTitle = (inputString: string): string => {
@@ -65,14 +67,22 @@ const PersonDetailsScreen: React.FC<DetailsScreenProps> = ({ route }) => {
             <DataTable.Title>Value</DataTable.Title>
           </DataTable.Header>
 
-          {Object.entries(person).map(([key, value], index) => (
-            <DataTable.Row key={index}>
-              <DataTable.Cell>{formatTitle(key)}</DataTable.Cell>
-              <DataTable.Cell>
-                <Text>{formatValue(value)}</Text>
-              </DataTable.Cell>
-            </DataTable.Row>
-          ))}
+          {Object.entries(person).map(([key, value], index) => {
+            const doNotUse = ["created", "edited", "url"];
+
+            if (doNotUse.includes(key.toLowerCase())) {
+              return undefined;
+            }
+
+            return (
+              <DataTable.Row key={index}>
+                <DataTable.Cell>{formatTitle(key)}</DataTable.Cell>
+                <DataTable.Cell>
+                  <Text>{formatValue(value)}</Text>
+                </DataTable.Cell>
+              </DataTable.Row>
+            );
+          })}
         </DataTable>
       ) : (
         <View>
