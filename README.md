@@ -1,10 +1,8 @@
 # Star Wars Favorites Mobile Application
 
-[Iphone 15pro ios17.0](https://github.com/user-attachments/assets/905f1ba8-8116-403d-aaba-8e5dc84537a2)
+[Iphone 15pro ios17.0](https://github.com/user-attachments/assets/e26339b3-9797-4383-8f9f-3e7cd914ae2c)
 
 [Pixel 4 API30 Android 11.0](https://github.com/SaperZP/incode_tt/assets/26072694/c69011ec-0fb4-43c0-953d-4f13f1f5927c)
-
-https://github.com/SaperZP/incode_tt/assets/26072694/4567b0fc-7b94-45c0-9ac3-01ef1983a00c
 
 A cross-platform mobile application that allows users to explore and manage their favorite characters, starships, and planets from the Star Wars universe. This React Native project leverages Redux Toolkit and modern libraries to deliver a smooth user experience with persistent local storage.
 
