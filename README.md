@@ -1,5 +1,6 @@
 # Star Wars Favorites Mobile Application
-[Iphone 15pro ios17.0](https://github.com/SaperZP/incode_tt/assets/26072694/0d394856-74ba-494f-8327-1de31ea26815)
+
+[Iphone 15pro ios17.0](https://github.com/user-attachments/assets/905f1ba8-8116-403d-aaba-8e5dc84537a2)
 
 [Pixel 4 API30 Android 11.0](https://github.com/SaperZP/incode_tt/assets/26072694/c69011ec-0fb4-43c0-953d-4f13f1f5927c)
 
