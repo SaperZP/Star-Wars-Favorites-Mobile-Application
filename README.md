@@ -9,7 +9,7 @@ A cross-platform mobile application that allows users to explore and manage thei
 
 ## Features
 
-- Browse and search Star Wars characters, starships, and planets
+- Browse and search Star Wars characters
 - Add and remove favorites with persistent local storage (Redux Persist)
 - Tab-based navigation for intuitive UX
 - Clean and responsive UI styled with React Native Paper
@@ -38,20 +38,6 @@ Make sure you have Expo CLI installed:
 npm install -g expo-cli
 ```
 
-## Screenshots
-
-> _Add screenshots here if available to showcase UI and functionality._
-
-## Future Improvements
-
-- Backend integration for dynamic data (currently uses static or mock data)
-- User authentication
-- Sync favorites across devices
-- Dark mode
-
-## License
-
-This project is licensed under the MIT License.
 
 ## Author
 
